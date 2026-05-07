@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>家計簿</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f6f3;
+    --surface: #ffffff;
+    --border: #e8e6e0;
+    --text: #1a1a18;
+    --muted: #888680;
+    --accent: #2c6e49;
+    --accent-light: #e8f5ee;
+    --accent2: #e07b39;
+    --radius: 12px;
+    --shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .app { max-width: 480px; margin: 0 auto; padding: 0 0 80px; }
+
+  /* Header */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px 0;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .header h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+  .month-nav { display: flex; align-items: center; gap: 8px; }
+  .month-nav button {
+    background: none; border: 1px solid var(--border);
+    border-radius: 8px; padding: 4px 10px; cursor: pointer;
+    font-size: 13px; color: var(--muted); font-family: inherit;
+  }
+  .month-nav button:hover { background: var(--bg); }
+  .month-nav span { font-size: 14px; font-weight: 500; min-width: 80px; text-align: center; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 2px; }
+  .tab {
+    flex: 1; padding: 10px 4px; background: none; border: none;
+    border-bottom: 2px solid transparent; cursor: pointer;
+    font-size: 13px; color: var(--muted); font-family: inherit;
+    transition: all 0.15s;
+  }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+
+  /* Content */
+  .content { padding: 16px; }
+
+  /* Metric cards */
+  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+  .metric {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px;
+    box-shadow: var(--shadow);
+  }
+  .metric-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .metric-value { font-size: 18px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .metric-value.accent { color: var(--accent); }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .card-title { font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Form */
+  .form-group { margin-bottom: 12px; }
+  .form-label { font-size: 12px; color: var(--muted); margin-bottom: 4px; display: block; }
+  .form-group input, .form-group select {
+    width: 100%; padding: 10px 12px;
+    border: 1px solid var(--border); border-radius: 8px;
+    font-size: 14px; font-family: inherit; background: var(--bg);
+    color: var(--text); outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--accent); background: white; }
+
+  .btn-add {
+    width: 100%; padding: 12px;
+    background: var(--accent); color: white; border: none;
+    border-radius: 10px; font-size: 15px; font-weight: 700;
+    font-family: inherit; cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    margin-top: 4px;
+  }
+  .btn-add:hover { opacity: 0.9; }
+  .btn-add:active { transform: scale(0.98); }
+
+  /* Expense rows */
+  .expense-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .expense-item:last-child { border-bottom: none; }
+  .expense-left { display: flex; align-items: center; gap: 10px; }
+  .cat-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  .expense-name { font-size: 14px; }
+  .expense-sub { font-size: 11px; color: var(--muted); }
+  .expense-right { display: flex; align-items: center; gap: 8px; }
+  .expense-amount { font-size: 15px; font-weight: 500; }
+  .btn-del {
+    background: none; border: none; color: #ccc; cursor: pointer;
+    font-size: 14px; padding: 2px; line-height: 1;
+  }
+  .btn-del:hover { color: #e05a5a; }
+
+  /* Empty state */
+  .empty { text-align: center; padding: 32px 0; color: var(--muted); font-size: 13px; }
+  .empty-icon { font-size: 32px; margin-bottom: 8px; }
+
+  /* Legend */
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--muted); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+  /* Date group header */
+  .date-header {
+    font-size: 11px; color: var(--muted); font-weight: 500;
+    padding: 8px 0 4px; letter-spacing: 0.3px;
+  }
+
+  /* Cat summary row */
+  .cat-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+  }
+  .cat-row:last-child { border-bottom: none; }
+  .cat-bar-wrap { flex: 1; margin: 0 12px; height: 4px; background: var(--bg); border-radius: 2px; overflow: hidden; }
+  .cat-bar { height: 100%; border-radius: 2px; }
+
+  /* Monthly chart container */
+  .chart-wrap { position: relative; width: 100%; }
+
+  /* Page hidden */
+  .page { display: none; }
+  .page.active { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-top">
+      <h1>💰 家計簿</h1>
+      <div class="month-nav">
+        <button onclick="changeMonth(-1)">‹</button>
+        <span id="month-label"></span>
+        <button onclick="changeMonth(1)">›</button>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('input', this)">入力</button>
+      <button class="tab" onclick="switchTab('list', this)">履歴</button>
+      <button class="tab" onclick="switchTab('graph', this)">グラフ</button>
+      <button class="tab" onclick="switchTab('summary', this)">サマリー</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- 入力 -->
+    <div id="page-input" class="page active">
+      <div class="card">
+        <div class="card-title">支出を記録</div>
+        <div class="form-group">
+          <label class="form-label">日付</label>
+          <input type="date" id="inp-date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">金額（円）</label>
+          <input type="number" id="inp-amount" placeholder="3500" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">カテゴリ</label>
+          <select id="inp-cat">
+            <option value="食費">🛒 食費</option>
+            <option value="外食">🍜 外食</option>
+            <option value="日用品">🧴 日用品</option>
+            <option value="交通費">🚃 交通費</option>
+            <option value="光熱費">💡 光熱費</option>
+            <option value="娯楽">🎮 娯楽</option>
+            <option value="医療">🏥 医療</option>
+            <option value="衣類">👕 衣類</option>
+            <option value="その他">📦 その他</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">メモ（任意）</label>
+          <input type="text" id="inp-memo" placeholder="例：スーパーで買い物">
+        </div>
+        <button class="btn-add" onclick="addExpense()">＋ 追加する</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">今日の支出</div>
+        <div id="today-list"></div>
+      </div>
+    </div>
+
+    <!-- 履歴 -->
+    <div id="page-list" class="page">
+      <div class="card">
+        <div class="card-title">支出履歴</div>
+        <div id="list-content"></div>
+      </div>
+    </div>
+
+    <!-- グラフ -->
+    <div id="page-graph" class="page">
+      <div class="card">
+        <div class="card-title">カテゴリ別内訳</div>
+        <div id="graph-legend" class="legend"></div>
+        <div class="chart-wrap" style="height:260px;">
+          <canvas id="cat-chart" role="img" aria-label="カテゴリ別支出円グラフ">カテゴリ別支出</canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- サマリー -->
+    <div id="page-summary" class="page">
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-label">今月の支出</div>
+          <div class="metric-value accent" id="sum-total">¥0</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">件数</div>
+          <div class="metric-value" id="sum-count">0件</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">1日平均</div>
+          <div class="metric-value" id="sum-avg">¥0</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">カテゴリ別合計</div>
+        <div id="sum-cats"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">月別推移（直近6ヶ月）</div>
+        <div class="chart-wrap" style="height:200px;">
+          <canvas id="month-chart" role="img" aria-label="月別支出推移棒グラフ">月別推移</canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const CAT_COLORS = {
+  '食費':'#2c6e49','外食':'#e07b39','日用品':'#3266ad','交通費':'#9b6bcc',
+  '光熱費':'#d4a017','娯楽':'#e05a6b','医療':'#2ab0c2','衣類':'#c46a9a','その他':'#888780'
+};
+const MONTHS_JP = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+
+let data = JSON.parse(localStorage.getItem('kakeibo_v2') || '[]');
+let curMonth = new Date().getMonth();
+let curYear = new Date().getFullYear();
+let catChart = null, monthChart = null;
+
+function save() { localStorage.setItem('kakeibo_v2', JSON.stringify(data)); }
+function fmt(n) { return '¥' + Math.round(n).toLocaleString(); }
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+document.getElementById('inp-date').value = todayStr();
+
+function updateMonthLabel() {
+  document.getElementById('month-label').textContent = curYear + '年 ' + MONTHS_JP[curMonth];
+}
+function changeMonth(dir) {
+  curMonth += dir;
+  if (curMonth < 0) { curMonth = 11; curYear--; }
+  if (curMonth > 11) { curMonth = 0; curYear++; }
+  updateMonthLabel();
+  renderAll();
+}
+
+function monthData(y, m) {
+  return data.filter(e => {
+    const d = new Date(e.date);
+    return d.getFullYear() === y && d.getMonth() === m;
+  });
+}
+
+function addExpense() {
+  const date = document.getElementById('inp-date').value;
+  const amount = parseInt(document.getElementById('inp-amount').value);
+  const cat = document.getElementById('inp-cat').value;
+  const memo = document.getElementById('inp-memo').value.trim();
+  if (!date || !amount || amount <= 0) { alert('日付と金額を入力してください'); return; }
+  data.push({ id: Date.now(), date, amount, cat, memo });
+  save();
+  document.getElementById('inp-amount').value = '';
+  document.getElementById('inp-memo').value = '';
+  renderAll();
+}
+
+function deleteItem(id) {
+  if (!confirm('削除しますか？')) return;
+  data = data.filter(e => e.id !== id);
+  save();
+  renderAll();
+}
+
+function expenseRow(e) {
+  const color = CAT_COLORS[e.cat] || '#888';
+  return `<div class="expense-item">
+    <div class="expense-left">
+      <div class="cat-dot" style="background:${color}"></div>
+      <div>
+        <div class="expense-name">${e.memo || e.cat}</div>
+        <div class="expense-sub">${e.cat}</div>
+      </div>
+    </div>
+    <div class="expense-right">
+      <span class="expense-amount">${fmt(e.amount)}</span>
+      <button class="btn-del" onclick="deleteItem(${e.id})">✕</button>
+    </div>
+  </div>`;
+}
+
+function renderToday() {
+  const today = todayStr();
+  const items = data.filter(e => e.date === today).sort((a,b) => b.id - a.id);
+  const el = document.getElementById('today-list');
+  if (!items.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📝</div>まだ記録がありません</div>';
+  } else {
+    el.innerHTML = items.map(expenseRow).join('');
+  }
+}
+
+function renderList() {
+  const items = monthData(curYear, curMonth).sort((a,b) => b.date.localeCompare(a.date) || b.id - a.id);
+  const el = document.getElementById('list-content');
+  if (!items.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div>記録がありません</div>';
+    return;
+  }
+  const grouped = {};
+  items.forEach(e => { (grouped[e.date] = grouped[e.date] || []).push(e); });
+  el.innerHTML = Object.entries(grouped).map(([date, es]) => {
+    const d = new Date(date);
+    const label = `${d.getMonth()+1}月${d.getDate()}日`;
+    return `<div class="date-header">${label}</div>` + es.map(expenseRow).join('');
+  }).join('');
+}
+
+function renderGraph() {
+  const items = monthData(curYear, curMonth);
+  const catTotals = {};
+  items.forEach(e => { catTotals[e.cat] = (catTotals[e.cat] || 0) + e.amount; });
+  const labels = Object.keys(catTotals);
+  const vals = labels.map(l => catTotals[l]);
+  const colors = labels.map(l => CAT_COLORS[l] || '#888');
+  const total = vals.reduce((a,b) => a+b, 0);
+
+  const legend = document.getElementById('graph-legend');
+  if (!labels.length) {
+    legend.innerHTML = '';
+    if (catChart) { catChart.destroy(); catChart = null; }
+    document.querySelector('#page-graph .chart-wrap').innerHTML = '<div class="empty" style="height:260px;display:flex;align-items:center;justify-content:center;flex-direction:column;"><div class="empty-icon">📊</div>記録がありません</div>';
+    return;
+  }
+
+  legend.innerHTML = labels.map((l,i) => `
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${colors[i]}"></div>
+      <span>${l} ${Math.round(vals[i]/total*100)}%</span>
+    </div>`).join('');
+
+  const canvasWrap = document.querySelector('#page-graph .chart-wrap');
+  if (!document.getElementById('cat-chart')) {
+    canvasWrap.innerHTML = '<canvas id="cat-chart" role="img" aria-label="カテゴリ別支出円グラフ" style="height:260px">カテゴリ別支出</canvas>';
+  }
+
+  if (catChart) catChart.destroy();
+  catChart = new Chart(document.getElementById('cat-chart'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: vals, backgroundColor: colors, borderWidth: 3, borderColor: '#fff', hoverOffset: 6 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ctx.label + ': ' + fmt(ctx.raw) + ' (' + Math.round(ctx.raw/total*100) + '%)' } }
+      },
+      cutout: '60%'
+    }
+  });
+}
+
+function renderSummary() {
+  const items = monthData(curYear, curMonth);
+  const total = items.reduce((a,b) => a+b.amount, 0);
+  const days = new Date(curYear, curMonth+1, 0).getDate();
+  document.getElementById('sum-total').textContent = fmt(total);
+  document.getElementById('sum-count').textContent = items.length + '件';
+  document.getElementById('sum-avg').textContent = fmt(total / days);
+
+  const catTotals = {};
+  items.forEach(e => { catTotals[e.cat] = (catTotals[e.cat] || 0) + e.amount; });
+  const sorted = Object.entries(catTotals).sort((a,b) => b[1]-a[1]);
+  const maxAmt = sorted.length ? sorted[0][1] : 1;
+  const el = document.getElementById('sum-cats');
+  if (!sorted.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📊</div>記録がありません</div>';
+  } else {
+    el.innerHTML = sorted.map(([cat, amt]) => `
+      <div class="cat-row">
+        <div style="display:flex;align-items:center;gap:6px;min-width:80px;">
+          <div class="cat-dot" style="background:${CAT_COLORS[cat]||'#888'}"></div>
+          <span style="font-size:13px;">${cat}</span>
+        </div>
+        <div class="cat-bar-wrap">
+          <div class="cat-bar" style="width:${Math.round(amt/maxAmt*100)}%;background:${CAT_COLORS[cat]||'#888'}"></div>
+        </div>
+        <span style="font-size:13px;font-weight:500;min-width:70px;text-align:right;">${fmt(amt)}</span>
+      </div>`).join('');
+  }
+
+  const last6 = [];
+  for (let i = 5; i >= 0; i--) {
+    let m = curMonth - i, y = curYear;
+    if (m < 0) { m += 12; y--; }
+    const mo = monthData(y, m);
+    last6.push({ label: (m+1) + '月', total: mo.reduce((a,b) => a+b.amount, 0) });
+  }
+
+  if (monthChart) monthChart.destroy();
+  monthChart = new Chart(document.getElementById('month-chart'), {
+    type: 'bar',
+    data: {
+      labels: last6.map(l => l.label),
+      datasets: [{
+        label: '支出', data: last6.map(l => l.total),
+        backgroundColor: last6.map((_,i) => i === 5 ? '#2c6e49' : '#c8dfd1'),
+        borderRadius: 6, borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => fmt(ctx.raw) } } },
+      scales: {
+        y: { ticks: { callback: v => v === 0 ? '¥0' : '¥' + (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(0,0,0,0.05)' }, border: { display: false } },
+        x: { grid: { display: false }, ticks: { autoSkip: false } }
+      }
+    }
+  });
+}
+
+function renderAll() {
+  renderToday();
+  renderList();
+  const activeTab = document.querySelector('.tab.active');
+  if (activeTab) {
+    const t = activeTab.getAttribute('onclick').match(/switchTab\('(\w+)'/);
+    if (t && t[1] === 'graph') renderGraph();
+    if (t && t[1] === 'summary') renderSummary();
+  }
+}
+
+let activeTabName = 'input';
+function switchTab(name, btn) {
+  activeTabName = name;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (name === 'graph') renderGraph();
+  if (name === 'summary') renderSummary();
+  if (name === 'list') renderList();
+}
+
+updateMonthLabel();
+renderAll();
+</script>
+</body>
+</html>
+
