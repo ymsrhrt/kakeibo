@@ -19,4 +19,338 @@
   .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
   .header h1 { font-size: 17px; font-weight: 700; }
   .month-nav { display: flex; align-items: center; gap: 6px; }
-  .month-nav button { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 3px 10px; cursor: pointer; font-size: 13px; color:
+  .month-nav button { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 3px 10px; cursor: pointer; font-size: 13px; color: var(--muted); font-family: inherit; }
+  .month-nav span { font-size: 14px; font-weight: 500; min-width: 70px; text-align: center; }
+  .period-label { font-size: 11px; color: var(--muted); text-align: center; padding-bottom: 8px; }
+  .sync-status { font-size: 11px; text-align: center; padding: 3px 0 6px; }
+  .sync-status.ok { color: var(--accent); }
+  .sync-status.err { color: var(--red); }
+  .sync-status.loading { color: var(--muted); }
+  .tabs { display: flex; }
+  .tab { flex: 1; padding: 9px 4px; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-size: 12px; color: var(--muted); font-family: inherit; transition: all 0.15s; }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+  .content { padding: 14px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; box-shadow: var(--shadow); }
+  .card-title { font-size: 11px; font-weight: 500; color: var(--muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+  .metric { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; box-shadow: var(--shadow); }
+  .metric-label { font-size: 10px; color: var(--muted); margin-bottom: 3px; }
+  .metric-value { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .metric-value.green { color: var(--accent); }
+  .metric-value.red { color: var(--red); }
+  .form-group { margin-bottom: 10px; }
+  .form-label { font-size: 11px; color: var(--muted); margin-bottom: 3px; display: block; }
+  .form-group input, .form-group select { width: 100%; padding: 9px 11px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: inherit; background: var(--bg); color: var(--text); outline: none; transition: border-color 0.15s; }
+  .form-group input:focus, .form-group select:focus { border-color: var(--accent); background: white; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .btn-add { width: 100%; padding: 11px; background: var(--accent); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; font-family: inherit; cursor: pointer; margin-top: 4px; }
+  .btn-add:active { opacity: 0.85; }
+  .btn-add:disabled { opacity: 0.5; }
+  .type-toggle { display: flex; gap: 6px; margin-bottom: 12px; }
+  .type-btn { flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: none; font-family: inherit; font-size: 13px; cursor: pointer; color: var(--muted); }
+  .type-btn.active-exp { background: #fdecea; border-color: var(--red); color: var(--red); font-weight: 500; }
+  .type-btn.active-inc { background: #e8f5ee; border-color: var(--accent); color: var(--accent); font-weight: 500; }
+  .row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--border); }
+  .row:last-child { border-bottom: none; }
+  .row-left { display: flex; align-items: center; gap: 9px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .row-name { font-size: 13px; }
+  .row-sub { font-size: 11px; color: var(--muted); }
+  .row-right { display: flex; align-items: center; gap: 8px; }
+  .row-amount { font-size: 14px; font-weight: 500; }
+  .row-amount.inc { color: var(--accent); }
+  .btn-del { background: none; border: none; color: #ccc; cursor: pointer; font-size: 13px; padding: 2px; }
+  .date-hdr { font-size: 11px; color: var(--muted); font-weight: 500; padding: 7px 0 3px; }
+  .empty { text-align: center; padding: 28px 0; color: var(--muted); font-size: 13px; }
+  .budget-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .budget-row:last-child { border-bottom: none; }
+  .budget-bar-wrap { flex: 1; margin: 0 10px; height: 5px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+  .budget-bar { height: 100%; border-radius: 3px; }
+  .budget-bar.over { background: var(--red) !important; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--muted); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+  .chart-wrap { position: relative; width: 100%; }
+  .income-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .income-row:last-child { border-bottom: none; }
+  .total-row { display: flex; justify-content: space-between; padding: 10px 0; font-weight: 700; font-size: 14px; border-top: 1px solid var(--border); margin-top: 4px; }
+  .remaining-bar-wrap { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; margin-top: 6px; }
+  .remaining-bar { height: 100%; border-radius: 4px; transition: width 0.4s; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 4px; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-top">
+      <h1>💰 2026家計管理</h1>
+      <div class="month-nav">
+        <button onclick="changeMonth(-1)">‹</button>
+        <span id="month-label"></span>
+        <button onclick="changeMonth(1)">›</button>
+      </div>
+    </div>
+    <div class="period-label" id="period-label"></div>
+    <div class="sync-status loading" id="sync-status"><span class="spinner"></span>同期中...</div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('input',this)">入力</button>
+      <button class="tab" onclick="switchTab('list',this)">履歴</button>
+      <button class="tab" onclick="switchTab('budget',this)">予算</button>
+      <button class="tab" onclick="switchTab('graph',this)">グラフ</button>
+      <button class="tab" onclick="switchTab('summary',this)">サマリー</button>
+    </div>
+  </div>
+  <div class="content">
+    <div id="page-input" class="page active">
+      <div class="card">
+        <div class="type-toggle">
+          <button class="type-btn active-exp" id="btn-exp" onclick="setType('expense')">− 支出</button>
+          <button class="type-btn" id="btn-inc" onclick="setType('income')">＋ 収入</button>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">日付</label><input type="date" id="inp-date"></div>
+          <div class="form-group"><label class="form-label">金額（円）</label><input type="number" id="inp-amount" placeholder="3500" min="0"></div>
+        </div>
+        <div class="form-group"><label class="form-label">カテゴリ</label><select id="inp-cat"></select></div>
+        <div class="form-group"><label class="form-label">メモ（任意）</label><input type="text" id="inp-memo" placeholder="例：スーパーで買い物"></div>
+        <button class="btn-add" id="btn-submit" onclick="addEntry()">追加する</button>
+      </div>
+      <div class="card"><div class="card-title">今日の記録</div><div id="today-list"></div></div>
+    </div>
+    <div id="page-list" class="page">
+      <div class="card"><div class="card-title" id="list-title">履歴</div><div id="list-content"></div></div>
+    </div>
+    <div id="page-budget" class="page">
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">収入合計</div><div class="metric-value green" id="bud-income">¥0</div></div>
+        <div class="metric"><div class="metric-label">支出合計</div><div class="metric-value red" id="bud-expense">¥0</div></div>
+        <div class="metric"><div class="metric-label">残高</div><div class="metric-value" id="bud-balance">¥0</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">残り使える額（食費・日用品 ＋ 外食）</div>
+        <div id="remaining-detail"></div>
+      </div>
+      <div class="card"><div class="card-title">カテゴリ別 予算 vs 実績</div><div id="budget-list"></div></div>
+    </div>
+    <div id="page-graph" class="page">
+      <div class="card">
+        <div class="card-title">カテゴリ別 支出内訳</div>
+        <div id="graph-legend" class="legend"></div>
+        <div class="chart-wrap" style="height:250px;"><canvas id="cat-chart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">期間別 支出推移（18日締め）</div>
+        <div class="chart-wrap" style="height:180px;"><canvas id="month-chart"></canvas></div>
+      </div>
+    </div>
+    <div id="page-summary" class="page">
+      <div class="card"><div class="card-title">収入内訳</div><div id="sum-income"></div></div>
+      <div class="card"><div class="card-title">カテゴリ別 支出合計</div><div id="sum-expense"></div></div>
+    </div>
+  </div>
+</div>
+<script>
+const GAS_URL='https://script.google.com/macros/s/AKfycby3sGwTbHB26JOLF_aUmkwPFVFGv8dFgx02O6bdaq3hsQO91Dp9h4LTgtTYuo4msh3d/exec';
+const EXP_CATS=[{name:'家賃',color:'#2c6e49'},{name:'水道',color:'#3498db'},{name:'ガス',color:'#e07b39'},{name:'スマホ・電気',color:'#9b6bcc'},{name:'食費・日用品',color:'#27ae60'},{name:'外食',color:'#e74c3c'},{name:'教育費',color:'#f39c12'},{name:'保育園',color:'#1abc9c'},{name:'医療費',color:'#e91e63'},{name:'ガソリン',color:'#795548'},{name:'理容・美容',color:'#c46a9a'},{name:'お小遣い',color:'#607d8b'},{name:'ローン・返済',color:'#d32f2f'},{name:'弁護士',color:'#5d4037'},{name:'娯楽',color:'#00bcd4'},{name:'予定外',color:'#ff5722'},{name:'その他',color:'#888780'}];
+const INC_CATS=[{name:'給料（モイ）',color:'#2c6e49'},{name:'給料（マリ）',color:'#27ae60'},{name:'児童手当',color:'#3498db'},{name:'キャッシュバック',color:'#9b6bcc'},{name:'その他収入',color:'#888780'}];
+const CAT_COLOR={};[...EXP_CATS,...INC_CATS].forEach(c=>CAT_COLOR[c.name]=c.color);
+const BUDGETS={'家賃':61430,'水道':9000,'ガス':9000,'スマホ・電気':60000,'食費・日用品':80000,'外食':10000,'教育費':14200,'保育園':38200,'医療費':2000,'ガソリン':20000,'理容・美容':5000,'お小遣い':20000,'ローン・返済':13000,'弁護士':30000};
+const HISTORICAL=[
+  {id:10001,date:'2026-01-01',type:'income',cat:'給料（モイ）',amount:244478,memo:'1月給料'},
+  {id:10002,date:'2026-01-01',type:'income',cat:'その他収入',amount:306855,memo:'プラス収入'},
+  {id:10010,date:'2026-01-10',type:'expense',cat:'家賃',amount:61430,memo:'家賃'},
+  {id:10011,date:'2026-01-25',type:'expense',cat:'水道',amount:13145,memo:'水道'},
+  {id:10012,date:'2026-01-25',type:'expense',cat:'スマホ・電気',amount:169697,memo:'スマホ・電気'},
+  {id:10014,date:'2026-01-01',type:'expense',cat:'教育費',amount:9045,memo:'金城小学校'},
+  {id:10015,date:'2026-01-01',type:'expense',cat:'お小遣い',amount:5266,memo:'お小遣い'},
+  {id:10017,date:'2026-01-16',type:'expense',cat:'予定外',amount:1034,memo:'陽汰 修学旅行追加請求'},
+  {id:10018,date:'2026-01-18',type:'expense',cat:'予定外',amount:4407,memo:'ピクニック'},
+  {id:10019,date:'2026-01-26',type:'expense',cat:'予定外',amount:1000,memo:'KSC'},
+  {id:10020,date:'2026-01-26',type:'expense',cat:'予定外',amount:700,memo:'JICC'},
+  {id:10021,date:'2026-01-28',type:'expense',cat:'予定外',amount:1101,memo:'万引き弁償'},
+  {id:10022,date:'2026-01-27',type:'expense',cat:'予定外',amount:500,memo:'CIC'},
+  {id:10023,date:'2026-01-16',type:'expense',cat:'食費・日用品',amount:2508,memo:'マグカップ'},
+  {id:10024,date:'2026-01-17',type:'expense',cat:'食費・日用品',amount:758,memo:'ローソン'},
+  {id:10025,date:'2026-01-18',type:'expense',cat:'その他',amount:2000,memo:'営繕費'},
+  {id:10026,date:'2026-01-17',type:'expense',cat:'食費・日用品',amount:5820,memo:'無印良品'},
+  {id:10027,date:'2026-01-18',type:'expense',cat:'理容・美容',amount:2860,memo:'化粧品'},
+  {id:10028,date:'2026-01-17',type:'expense',cat:'食費・日用品',amount:4906,memo:'ドライレ'},
+  {id:10029,date:'2026-01-19',type:'expense',cat:'食費・日用品',amount:8803,memo:'カインズ'},
+  {id:10030,date:'2026-01-16',type:'expense',cat:'外食',amount:7310,memo:'びっくりドンキー'},
+  {id:10031,date:'2026-01-17',type:'expense',cat:'外食',amount:1320,memo:'朝モス'},
+  {id:20001,date:'2026-02-01',type:'income',cat:'給料（モイ）',amount:254851,memo:'2月給料'},
+  {id:20002,date:'2026-02-01',type:'income',cat:'児童手当',amount:80000,memo:'子育て応援児手当'},
+  {id:20003,date:'2026-02-01',type:'income',cat:'その他収入',amount:50000,memo:'マリから'},
+  {id:20010,date:'2026-02-10',type:'expense',cat:'家賃',amount:68630,memo:'家賃'},
+  {id:20012,date:'2026-02-25',type:'expense',cat:'水道',amount:13145,memo:'水道'},
+  {id:20013,date:'2026-02-01',type:'expense',cat:'ガス',amount:16893,memo:'ガス'},
+  {id:20014,date:'2026-02-25',type:'expense',cat:'スマホ・電気',amount:27485,memo:'スマホ・電気'},
+  {id:20015,date:'2026-02-01',type:'expense',cat:'教育費',amount:2850,memo:'金城小学校'},
+  {id:20016,date:'2026-02-01',type:'expense',cat:'お小遣い',amount:4587,memo:'お小遣い'},
+  {id:20017,date:'2026-02-01',type:'expense',cat:'保育園',amount:76400,memo:'保育園(2ヶ月分)'},
+  {id:20018,date:'2026-02-01',type:'expense',cat:'外食',amount:6200,memo:'外食'},
+  {id:20019,date:'2026-02-01',type:'expense',cat:'弁護士',amount:30000,memo:'弁護士'},
+  {id:20020,date:'2026-02-01',type:'expense',cat:'食費・日用品',amount:8039,memo:'食費・日用品'},
+  {id:20021,date:'2026-02-01',type:'expense',cat:'医療費',amount:5000,memo:'医療費'},
+  {id:20022,date:'2026-02-01',type:'expense',cat:'理容・美容',amount:7112,memo:'理容・美容'},
+  {id:20023,date:'2026-02-01',type:'expense',cat:'ローン・返済',amount:8000,memo:'プロミス'},
+  {id:20024,date:'2026-02-01',type:'expense',cat:'その他',amount:13000,memo:'Aさん'},
+  {id:20025,date:'2026-02-01',type:'expense',cat:'予定外',amount:10846,memo:'予定外'},
+  {id:20026,date:'2026-02-18',type:'expense',cat:'食費・日用品',amount:5747,memo:'イオン お米など'},
+  {id:20027,date:'2026-02-22',type:'expense',cat:'食費・日用品',amount:1089,memo:'藍の洋服'},
+  {id:20028,date:'2026-02-27',type:'expense',cat:'食費・日用品',amount:1203,memo:'ローソン チキン'},
+  {id:20029,date:'2026-02-19',type:'expense',cat:'外食',amount:4600,memo:'ジミー'},
+  {id:20030,date:'2026-02-22',type:'expense',cat:'外食',amount:950,memo:'マットー'},
+  {id:20031,date:'2026-02-22',type:'expense',cat:'外食',amount:650,memo:'シフォンケーキ'},
+  {id:20032,date:'2026-02-18',type:'expense',cat:'その他',amount:2000,memo:'営繕費'},
+  {id:20033,date:'2026-02-18',type:'expense',cat:'外食',amount:913,memo:'ミスド'},
+  {id:20034,date:'2026-02-19',type:'expense',cat:'外食',amount:614,memo:'パニーニ'},
+  {id:20035,date:'2026-02-20',type:'expense',cat:'その他',amount:1060,memo:'リベシティ'},
+  {id:20036,date:'2026-02-28',type:'expense',cat:'教育費',amount:8756,memo:'蒼汰・涼汰 靴'},
+  {id:30001,date:'2026-03-01',type:'income',cat:'給料（モイ）',amount:258243,memo:'3月給料'},
+  {id:30002,date:'2026-03-01',type:'income',cat:'児童手当',amount:160000,memo:'児童手当'},
+  {id:30003,date:'2026-03-01',type:'income',cat:'キャッシュバック',amount:50000,memo:'ワイモバイル キャッシュバック'},
+  {id:30004,date:'2026-03-01',type:'income',cat:'その他収入',amount:15000,memo:'マリ'},
+  {id:30010,date:'2026-03-10',type:'expense',cat:'家賃',amount:61430,memo:'家賃'},
+  {id:30011,date:'2026-03-25',type:'expense',cat:'水道',amount:14742,memo:'水道'},
+  {id:30012,date:'2026-03-25',type:'expense',cat:'スマホ・電気',amount:29680,memo:'スマホ・電気'},
+  {id:30013,date:'2026-03-01',type:'expense',cat:'教育費',amount:8825,memo:'金城小学校'},
+  {id:30014,date:'2026-03-01',type:'expense',cat:'教育費',amount:14690,memo:'金城中学校'},
+  {id:30015,date:'2026-03-01',type:'expense',cat:'お小遣い',amount:13230,memo:'お小遣い'},
+  {id:30016,date:'2026-03-01',type:'expense',cat:'保育園',amount:37500,memo:'保育園'},
+  {id:30017,date:'2026-03-01',type:'expense',cat:'弁護士',amount:30000,memo:'弁護士'},
+  {id:30018,date:'2026-03-01',type:'expense',cat:'食費・日用品',amount:1110,memo:'食費・日用品'},
+  {id:30019,date:'2026-03-01',type:'expense',cat:'外食',amount:10830,memo:'外食'},
+  {id:30020,date:'2026-03-01',type:'expense',cat:'ローン・返済',amount:8000,memo:'プロミス'},
+  {id:30021,date:'2026-03-01',type:'expense',cat:'その他',amount:10000,memo:'Aさん'},
+  {id:30023,date:'2026-03-19',type:'expense',cat:'予定外',amount:13068,memo:'conoha'},
+  {id:30024,date:'2026-03-19',type:'expense',cat:'予定外',amount:4600,memo:'送別会'},
+  {id:30025,date:'2026-03-21',type:'expense',cat:'予定外',amount:22480,memo:'陽汰の自転車'},
+  {id:30026,date:'2026-03-22',type:'expense',cat:'予定外',amount:30000,memo:'マリの就職準備'},
+  {id:30027,date:'2026-03-23',type:'expense',cat:'予定外',amount:1000,memo:'野口さん おはなむけ'},
+  {id:30028,date:'2026-03-22',type:'expense',cat:'予定外',amount:1000,memo:'PayPay 陽汰'},
+  {id:30029,date:'2026-03-18',type:'expense',cat:'外食',amount:3170,memo:'大阪王将'},
+  {id:30030,date:'2026-03-20',type:'expense',cat:'外食',amount:8180,memo:'コービー'},
+  {id:30031,date:'2026-03-18',type:'expense',cat:'外食',amount:2650,memo:'すき家'},
+  {id:30032,date:'2026-03-21',type:'expense',cat:'外食',amount:3751,memo:'鳥玉'},
+  {id:30033,date:'2026-03-29',type:'expense',cat:'外食',amount:1210,memo:'モス'},
+  {id:30034,date:'2026-03-31',type:'expense',cat:'外食',amount:530,memo:'ハッピーセット'},
+  {id:30035,date:'2026-03-18',type:'expense',cat:'その他',amount:1220,memo:'富士屋'},
+  {id:30036,date:'2026-03-18',type:'expense',cat:'その他',amount:6000,memo:'プレゼント'},
+  {id:30037,date:'2026-03-18',type:'expense',cat:'その他',amount:1700,memo:'珈琲待夢'},
+  {id:30038,date:'2026-03-24',type:'expense',cat:'その他',amount:2000,memo:'営繕費'},
+  {id:40001,date:'2026-04-01',type:'income',cat:'給料（モイ）',amount:276508,memo:'4月給料'},
+  {id:40002,date:'2026-04-01',type:'income',cat:'その他収入',amount:5200,memo:'プラス収入'},
+  {id:40010,date:'2026-04-10',type:'expense',cat:'家賃',amount:61430,memo:'家賃'},
+  {id:40011,date:'2026-04-25',type:'expense',cat:'水道',amount:13712,memo:'水道'},
+  {id:40012,date:'2026-04-01',type:'expense',cat:'ガス',amount:14581,memo:'ガス'},
+  {id:40013,date:'2026-04-25',type:'expense',cat:'スマホ・電気',amount:32778,memo:'スマホ・電気'},
+  {id:40014,date:'2026-04-01',type:'expense',cat:'お小遣い',amount:8413,memo:'お小遣い'},
+  {id:40015,date:'2026-04-01',type:'expense',cat:'保育園',amount:37500,memo:'保育園'},
+  {id:40016,date:'2026-04-01',type:'expense',cat:'弁護士',amount:30000,memo:'弁護士'},
+  {id:40017,date:'2026-04-01',type:'expense',cat:'食費・日用品',amount:1110,memo:'食費・日用品'},
+  {id:40018,date:'2026-04-01',type:'expense',cat:'外食',amount:10830,memo:'外食'},
+  {id:40019,date:'2026-04-01',type:'expense',cat:'ローン・返済',amount:8000,memo:'プロミス'},
+  {id:40020,date:'2026-04-01',type:'expense',cat:'その他',amount:10000,memo:'Aさん'},
+  {id:40021,date:'2026-04-01',type:'expense',cat:'予定外',amount:10000,memo:'予定外'},
+  {id:40022,date:'2026-04-18',type:'expense',cat:'外食',amount:1380,memo:'ライカム つけ麺'},
+  {id:40023,date:'2026-04-20',type:'expense',cat:'外食',amount:4320,memo:'コメダ'},
+  {id:40024,date:'2026-04-23',type:'expense',cat:'外食',amount:2350,memo:'ドトール'},
+  {id:40025,date:'2026-04-27',type:'expense',cat:'外食',amount:2780,memo:'かつのや'},
+  {id:40026,date:'2026-04-17',type:'expense',cat:'食費・日用品',amount:1531,memo:'ローソン 炭酸水'},
+  {id:40027,date:'2026-04-19',type:'expense',cat:'食費・日用品',amount:882,memo:'ローソン コーヒー'},
+  {id:40028,date:'2026-04-20',type:'expense',cat:'その他',amount:2000,memo:'営繕費'},
+  {id:40029,date:'2026-04-24',type:'expense',cat:'その他',amount:4000,memo:'管理班食事会'},
+  {id:40030,date:'2026-04-25',type:'expense',cat:'その他',amount:2000,memo:'涼汰のデート'},
+  {id:40031,date:'2026-04-25',type:'expense',cat:'その他',amount:2000,memo:'マリへ'},
+  {id:40032,date:'2026-05-03',type:'expense',cat:'娯楽',amount:6000,memo:'蒼汰メトキッズ'},
+  {id:40033,date:'2026-04-10',type:'expense',cat:'その他',amount:2310,memo:'リベシティ'},
+];
+let sheetData=[];
+let entryType='expense';
+function currentPeriod(){const today=new Date();const y=today.getFullYear();const m=today.getMonth();const d=today.getDate();if(d>=19){return{month:m+1>11?0:m+1,fullYear:m+1>11?y+1:y};}return{month:m,fullYear:y};}
+const cp=currentPeriod();
+let curMonth=cp.month;let curYear=cp.fullYear;
+let catChart=null,monthChart=null;
+const MONTHS_JP=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+function getPeriodRange(year,month){return{startDate:new Date(year,month-1,19),endDate:new Date(year,month,18)};}
+function dateInPeriod(dateStr,year,month){const{startDate,endDate}=getPeriodRange(year,month);const d=new Date(dateStr);d.setHours(0,0,0,0);startDate.setHours(0,0,0,0);endDate.setHours(0,0,0,0);return d>=startDate&&d<=endDate;}
+function periodLabel(year,month){const{startDate,endDate}=getPeriodRange(year,month);return`${startDate.getMonth()+1}/${startDate.getDate()} 〜 ${endDate.getMonth()+1}/${endDate.getDate()}`;}
+function allData(){const sheetIds=new Set(sheetData.map(e=>String(e.id)));const filtered=HISTORICAL.filter(e=>!sheetIds.has(String(e.id)));return[...filtered,...sheetData];}
+function fmt(n){return'¥'+Math.round(Math.abs(n)).toLocaleString();}
+function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function periodFilter(arr){return arr.filter(e=>dateInPeriod(e.date,curYear,curMonth));}
+function setSyncStatus(type,msg){const el=document.getElementById('sync-status');el.className='sync-status '+type;el.innerHTML=type==='loading'?`<span class="spinner"></span>${msg}`:msg;}
+async function syncFromSheet(){
+  setSyncStatus('loading','同期中...');
+  try{
+    const res=await fetch(GAS_URL,{method:'GET',redirect:'follow'});
+    const json=await res.json();
+    if(json.success){
+      sheetData=json.entries.map(e=>({id:Number(e.id),date:e.date,type:e.type,cat:e.cat,amount:Number(e.amount),memo:e.memo||''})).filter(e=>e.id&&e.date);
+      setSyncStatus('ok',`✓ 同期完了（${sheetData.length}件）`);
+    }else{throw new Error();}
+  }catch(err){setSyncStatus('err','⚠ オフライン（ローカルデータで表示中）');}
+  renderAll();
+}
+async function postToSheet(action,payload){
+  const res=await fetch(GAS_URL,{method:'POST',body:JSON.stringify({action,...payload}),redirect:'follow'});
+  return await res.json();
+}
+document.getElementById('inp-date').value=todayStr();
+function updateLabels(){document.getElementById('month-label').textContent=MONTHS_JP[curMonth]+'分';document.getElementById('period-label').textContent='📅 '+periodLabel(curYear,curMonth);}
+function changeMonth(dir){curMonth+=dir;if(curMonth<0){curMonth=11;curYear--;}if(curMonth>11){curMonth=0;curYear++;}updateLabels();renderAll();}
+function setType(t){
+  entryType=t;
+  document.getElementById('btn-exp').className='type-btn'+(t==='expense'?' active-exp':'');
+  document.getElementById('btn-inc').className='type-btn'+(t==='income'?' active-inc':'');
+  const sel=document.getElementById('inp-cat');sel.innerHTML='';
+  (t==='expense'?EXP_CATS:INC_CATS).forEach(c=>{const o=document.createElement('option');o.value=c.name;o.textContent=c.name;sel.appendChild(o);});
+}
+setType('expense');
+async function addEntry(){
+  const date=document.getElementById('inp-date').value;
+  const amount=parseInt(document.getElementById('inp-amount').value);
+  const cat=document.getElementById('inp-cat').value;
+  const memo=document.getElementById('inp-memo').value.trim();
+  if(!date||!amount||amount<=0){alert('日付と金額を入力してください');return;}
+  const entry={id:Date.now(),date,type:entryType,cat,amount,memo};
+  const btn=document.getElementById('btn-submit');
+  btn.disabled=true;btn.textContent='送信中...';
+  setSyncStatus('loading','保存中...');
+  try{
+    const result=await postToSheet('add',{entry});
+    if(result.success){sheetData.push(entry);setSyncStatus('ok','✓ 保存しました');}
+    else{throw new Error();}
+  }catch(e){setSyncStatus('err','⚠ 保存失敗。再試行してください');}
+  btn.disabled=false;btn.textContent='追加する';
+  document.getElementById('inp-amount').value='';document.getElementById('inp-memo').value='';
+  renderAll();
+}
+async function deleteEntry(id){
+  if(id<100000){alert('過去データは削除できません');return;}
+  if(!confirm('削除しますか？'))return;
+  setSyncStatus('loading','削除中...');
+  try{
+    const result=await postToSheet('delete',{id});
+    if(result.success){sheetData=sheetData.filter(e=>e.id!==id);setSyncStatus('ok','✓ 削除しました');}
+    else{throw new Error();}
+  }catch(e){setSyncStatus('err','⚠ 削除失敗');}
+  renderAll();
+}
+function entryRow(e){const color=CAT_COLOR[e.cat]||'#888';const isInc=e.type==='income';return`<div class="row"><div class="row-left"><div class="dot" style="background:${color}"></div><div><div class="row-name">${e.memo||e.cat}</div><div class="row-sub">${e.cat}</div></div></div><div class="row-right"><span class="row-amount ${isInc?'inc':''}">${isInc?'＋':''}${fmt(e.amount)}</span><button class="btn-del" onclick="deleteEntry(${e.id})">✕</button></div></div>`;}
+function renderToday(){const today=todayStr();const items=allData().filter(e=>e.date===today).sort((a,b)=>b.id-a.id);document.getElementById('today-list').innerHTML=items.length?items.map(entryRow).join(''):'<div class="empty">まだ記録がありません</div>';}
+function renderList(){document.getElementById('list-title').textContent=MONTHS_JP[curMonth]+'分（'+periodLabel(curYear,curMonth)+'）';const items=periodFilter(allData()).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);const el=document.getElementById('list-content');if(!items.length){el.innerHTML='<div class="empty">記録がありません</div>';return;}const grouped={};items.forEach(e=>(grouped[e.date]=grouped[e.date]||[]).push(e));el.innerHTML=Object.entries(grouped).map(([date,es])=>{const d=new Date(date);return`<div class="date-hdr">${d.getMonth()+1}月${d.getDate()}日</div>`+es.map(entryRow).join('');}).join('');}
+function renderBudget(){const items=periodFilter(allData());const totalInc=items.filter(e=>e.type==='income').reduce((a,b)=>a+b.amount,0);const totalExp=items.filter(e=>e.type==='expense').reduce((a,b)=>a+b.amount,0);const balance=totalInc-totalExp;document.getElementById('bud-income').textContent=fmt(totalInc);document.getElementById('bud-expense').textContent=fmt(totalExp);const balEl=document.getElementById('bud-balance');balEl.textContent=(balance<0?'-':'')+fmt(balance);balEl.className='metric-value '+(balance>=0?'green':'red');const catExp={};items.filter(e=>e.type==='expense').forEach(e=>catExp[e.cat]=(catExp[e.cat]||0)+e.amount);const foodBudget=(BUDGETS['食費・日用品']||0)+(BUDGETS['外食']||0);const foodActual=(catExp['食費・日用品']||0)+(catExp['外食']||0);const foodRemain=foodBudget-foodActual;const foodPct=Math.min(foodActual/foodBudget*100,100);const foodOver=foodActual>foodBudget;document.getElementById('remaining-detail').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:13px;">予算 ${fmt(foodBudget)} ／ 使用 ${fmt(foodActual)}</span><span style="font-size:16px;font-weight:700;color:${foodOver?'var(--red)':'var(--accent)'};">${foodOver?'超過 -':'残り '}${fmt(Math.abs(foodRemain))}</span></div><div class="remaining-bar-wrap"><div class="remaining-bar" style="width:${foodPct.toFixed(0)}%;background:${foodOver?'var(--red)':'var(--accent)'}"></div></div>`;const cats=[...new Set([...Object.keys(BUDGETS),...Object.keys(catExp)])];document.getElementById('budget-list').innerHTML=cats.map(cat=>{const budget=BUDGETS[cat]||0;const actual=catExp[cat]||0;if(!budget&&!actual)return'';const pct=budget>0?Math.min(actual/budget*100,100):100;const over=actual>budget&&budget>0;const color=CAT_COLOR[cat]||'#888';return`<div class="budget-row"><div style="min-width:90px;font-size:12px;">${cat}</div><div class="budget-bar-wrap"><div class="budget-bar${over?' over':''}" style="width:${pct.toFixed(0)}%;${over?'':'background:'+color}"></div></div><div style="min-width:90px;text-align:right;font-size:12px;"><span style="color:${over?'var(--red)':'var(--text)'};">${fmt(actual)}</span>${budget?`<span style="color:var(--muted);"> / ${fmt(budget)}</span>`:''}</div></div>`;}).join('');}
+function renderGraph(){const items=periodFilter(allData()).filter(e=>e.type==='expense');const catTotals={};items.forEach(e=>catTotals[e.cat]=(catTotals[e.cat]||0)+e.amount);const labels=Object.keys(catTotals);const vals=labels.map(l=>catTotals[l]);const colors=labels.map(l=>CAT_COLOR[l]||'#888');const total=vals.reduce((a,b)=>a+b,0);const legend=document.getElementById('graph-legend');if(!labels.length){legend.innerHTML='';if(catChart){catChart.destroy();catChart=null;}return;}legend.innerHTML=labels.map((l,i)=>`<div class="legend-item"><div class="legend-dot" style="background:${colors[i]}"></div><span>${l} ${Math.round(vals[i]/total*100)}%</span></div>`).join('');if(catChart)catChart.destroy();catChart=new Chart(document.getElementById('cat-chart'),{type:'doughnut',data:{labels,datasets:[{data:vals,backgroundColor:colors,borderWidth:2,borderColor:'#fff',hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.label+': '+fmt(ctx.raw)+' ('+Math.round(ctx.raw/total*100)+'%)'}}}}});const last6=[];for(let i=5;i>=0;i--){let m=curMonth-i,y=curYear;if(m<0){m+=12;y--;}if(m>11){m-=12;y++;}const mo=allData().filter(e=>dateInPeriod(e.date,y,m)&&e.type==='expense');last6.push({label:MONTHS_JP[m],total:mo.reduce((a,b)=>a+b.amount,0)});}if(monthChart)monthChart.destroy();monthChart=new Chart(document.getElementById('month-chart'),{type:'bar',data:{labels:last6.map(l=>l.label),datasets:[{data:last6.map(l=>l.total),backgroundColor:last6.map((_,i)=>i===5?'#2c6e49':'#c8dfd1'),borderRadius:5,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>fmt(ctx.raw)}}},scales:{y:{ticks:{callback:v=>v===0?'¥0':'¥'+(v/10000).toFixed(0)+'万'},grid:{color:'rgba(0,0,0,0.05)'},border:{display:false}},x:{grid:{display:false},ticks:{autoSkip:false}}}}});}
+function renderSummary(){const items=periodFilter(allData());const incItems=items.filter(e=>e.type==='income');const expItems=items.filter(e=>e.type==='expense');const incByCat={};incItems.forEach(e=>incByCat[e.cat]=(incByCat[e.cat]||0)+e.amount);const totalInc=incItems.reduce((a,b)=>a+b.amount,0);const elInc=document.getElementById('sum-income');if(!Object.keys(incByCat).length){elInc.innerHTML='<div class="empty">収入記録がありません</div>';}else{elInc.innerHTML=Object.entries(incByCat).map(([cat,amt])=>`<div class="income-row"><div style="display:flex;align-items:center;gap:7px;"><div class="dot" style="background:${CAT_COLOR[cat]||'#888'}"></div>${cat}</div><span style="color:var(--accent);font-weight:500;">${fmt(amt)}</span></div>`).join('')+`<div class="total-row"><span>合計</span><span style="color:var(--accent)">${fmt(totalInc)}</span></div>`;}const expByCat={};expItems.forEach(e=>expByCat[e.cat]=(expByCat[e.cat]||0)+e.amount);const totalExp=expItems.reduce((a,b)=>a+b.amount,0);const sorted=Object.entries(expByCat).sort((a,b)=>b[1]-a[1]);const maxAmt=sorted.length?sorted[0][1]:1;const elExp=document.getElementById('sum-expense');if(!sorted.length){elExp.innerHTML='<div class="empty">支出記録がありません</div>';}else{elExp.innerHTML=sorted.map(([cat,amt])=>`<div class="budget-row"><div style="display:flex;align-items:center;gap:6px;min-width:90px;font-size:12px;"><div class="dot" style="background:${CAT_COLOR[cat]||'#888'}"></div>${cat}</div><div class="budget-bar-wrap"><div class="budget-bar" style="width:${Math.round(amt/maxAmt*100)}%;background:${CAT_COLOR[cat]||'#888'}"></div></div><span style="min-width:70px;text-align:right;font-size:12px;font-weight:500;">${fmt(amt)}</span></div>`).join('')+`<div class="total-row"><span>合計</span><span>${fmt(totalExp)}</span></div>`;}}
+function renderAll(){renderToday();renderList();renderBudget();const t=document.querySelector('.tab.active')?.getAttribute('onclick')?.match(/switchTab\('(\w+)'/);if(t){if(t[1]==='graph')renderGraph();if(t[1]==='summary')renderSummary();}}
+function switchTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));if(btn)btn.classList.add('active');document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');if(name==='graph')renderGraph();if(name==='summary')renderSummary();if(name==='list')renderList();if(name==='budget')renderBudget();}
+updateLabels();
+syncFromSheet();
+</script>
+</body>
+</html>
